@@ -11,8 +11,35 @@ from .serializers import CategorySerializer, ProductSerializer
 @api_view(['GET'])
 def get_categories(request):
     categories = Category.objects.order_by('name')
+    query1 = request.GET.get('search')
+
+    if query1 == None:
+        query1 = ''
+
+    categories = categories.filter(
+        Q(name__icontains=query1)
+    )
+    page = request.GET.get('page')
+    paginator = Paginator(categories, 25)
+
+    try:
+        categories = paginator.page(page)
+    except PageNotAnInteger:
+        categories = paginator.page(1)
+    except EmptyPage:
+        categories = paginator.page(paginator.num_pages)
+
+    if page is None:
+        page = 1
+    page = int(page)
     serializer = CategorySerializer(categories, many=True)
-    return Response(serializer.data)
+    return Response(
+        {
+            'categories': serializer.data,
+            'page': page,
+            'pages': paginator.num_pages
+        }
+    )
 
 
 @api_view(['GET'])
@@ -30,7 +57,7 @@ def get_products(request):
     if query1 == None:
         query1 = ''
 
-    products = Product.objects.filter(
+    products = products.filter(
         Q(name__icontains = query1)|
         Q(as_key__icontains = query1)|
         Q(p_num__icontains = query1)
