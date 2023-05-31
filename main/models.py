@@ -22,3 +22,48 @@ class AuthorStamp(models.Model):
 
     class Meta:
         abstract = True
+
+
+class Category(AuthorStamp):
+    name = models.CharField(
+        _('անվանում'),
+        max_length=255
+    )
+    icon = models.ImageField(
+        _('պատկեր'),
+        upload_to='images/categories/icons/',
+        default='images/no_image.png',
+        blank=True, null=True
+    )
+
+    class Meta:
+        verbose_name = _('Դասակարգ')
+        verbose_name_plural = _('Դասակարգեր')
+
+    def __str__(self):
+        return self.name
+
+
+class SubCategory(AuthorStamp):
+    category = models.ForeignKey(
+        Category,
+        verbose_name=_('դասակարգ'),
+        on_delete=models.CASCADE
+    )
+    name = models.CharField(
+        _('անվանում'),
+        max_length=255
+    )
+    icon = models.ImageField(
+        _('պատկեր'),
+        upload_to='images/subcategories/icons/',
+        default='images/no_image.png',
+        blank=True, null=True
+    )
+
+    class Meta:
+        verbose_name = _('Ենթադասակարգ')
+        verbose_name_plural = _('Ենթադասակարգեր')
+
+    def __str__(self):
+        return self.name

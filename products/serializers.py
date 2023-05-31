@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Category, SubCategory, Measure, Product
+from main.models import Category, SubCategory
+from warehouse.models import  Measure, Product
 
 
 class CategorySerializer(serializers.ModelSerializer):

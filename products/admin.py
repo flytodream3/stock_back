@@ -1,7 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
-from .models import Category, SubCategory, Measure, Product
+from main.models import Category, SubCategory
+from  warehouse.models import Measure, Product
 
 
 @admin.register(Category)

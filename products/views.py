@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import Category, Product
+from main.models import Category
+from warehouse.models import Product
 
 from .serializers import CategorySerializer, ProductSerializer
 
