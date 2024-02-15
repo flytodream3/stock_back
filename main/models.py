@@ -19,6 +19,14 @@ class AuthorStamp(models.Model):
         auto_now=True,
         null=True, blank=True
     )
+    deleted_at = models.DateTimeField(
+        _('ջնջվել է'),
+        null=True, blank=True
+    )
+    deleted = models.BooleanField(
+        _('ջնջված'),
+        default=False
+    )
 
     class Meta:
         abstract = True
