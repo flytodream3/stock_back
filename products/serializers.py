@@ -11,6 +11,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class SubCategorySerializer(serializers.ModelSerializer):
+    icon = serializers.ImageField(
+        max_length=None, allow_empty_file=False,
+        allow_null=True, required=False, source='icon'
+    )
     class Meta:
         model = SubCategory
         fields = ['id', 'name', 'category', 'icon']
