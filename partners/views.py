@@ -1,5 +1,7 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -21,7 +23,7 @@ def get_divisions(request):
         Q(name__icontains=query1)
     )
     page = request.GET.get('page')
-    paginator = Paginator(divisions, 15)
+    paginator = Paginator(divisions, 150)
 
     try:
         divisions = paginator.page(page)
@@ -34,10 +36,18 @@ def get_divisions(request):
         page = 1
     page = int(page)
     serializer = DivisionSerializer(divisions, many=True)
-    return Response(
-        {
-            'divisions': serializer.data,
-            'page': page,
-            'pages': paginator.num_pages
-        }
-    )
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_division(request):
+    if request.method == 'POST':
+        serializer = DivisionSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'detail': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
